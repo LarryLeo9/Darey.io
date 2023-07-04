@@ -9,3 +9,7 @@ This LEMP stack project was started and completed by me. I encountered and error
 
 
 ![Screenshot 2023-06-24 at 21 08 21](https://github.com/LarryLeo9/Darey.io/assets/136237391/cac4de98-e7e6-4a10-ad85-2d294d6722f9)
+
+
+
+Thank you.
