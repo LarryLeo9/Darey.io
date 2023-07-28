@@ -205,11 +205,11 @@ Verify that the service is up and running by using sudo systemctl status mysqld,
 
 #### Step 5 — Configure DB to work with WordPress
 
-sudo mysql
+sudo mysql. You can also use "sudo mysql -u root -p" for already created mysql account.
 
 CREATE DATABASE wordpress;
 
-CREATE USER `myuser`@`<Web-Server-Private-IP-Address>` IDENTIFIED BY 'mypass';
+CREATE USER `myuser (wordpress)`@`<Web-Server-Private-IP-Address>` IDENTIFIED BY 'the password created';
 
 GRANT ALL ON wordpress.* TO 'myuser'@'<Web-Server-Private-IP-Address>';
 
@@ -219,9 +219,24 @@ SHOW DATABASES;
 
 exit
 
+Use "sudo vi /etc/my.cnf" to bind address. Add the ip address used to set the mysql account.
 
+<img width="575" alt="Screenshot 2023-07-28 at 22 09 58" src="https://github.com/LarryLeo9/Darey.io/assets/136237391/6b386bdc-0448-46f6-bf3f-d1440d8158df">
+
+Go back to the EC2 webserver and configure the PHP using "vi wp-config.php"
 
 #### Step 6 — Configure WordPress to connect to remote database.
 
 Hint: Do not forget to open MySQL port 3306 on DB Server EC2. For extra security, you shall allow access to the DB server ONLY from your Web Server’s IP address, so in the Inbound Rule configuration specify source as /32
+
+1. Install MySQL client and test that you can connect from your Web Server to your DB server by using mysql-client
+
+sudo yum install mysql
+
+sudo mysql -u username -p -h <DB-Server-Private-IP-address>
+
+Verify if you can successfully execute SHOW DATABASES; command and see a list of existing databases.
+
+<img width="575" alt="Screenshot 2023-07-29 at 00 41 16" src="https://github.com/LarryLeo9/Darey.io/assets/136237391/6859d675-bb2f-4851-a6e2-b3c2c9cde0cb">
+
 
