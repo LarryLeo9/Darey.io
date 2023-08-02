@@ -31,13 +31,19 @@ Mysql server installed and connected.
 
 Mysql client installed
 
-4. MySQL server uses TCP port 3306 by default, so you will have to open it by creating a new entry in ‘Inbound rules’ in ‘mysql server’ Security Groups. For extra security, do not allow all IP addresses to reach your ‘mysql server’ – allow access only to the specific local IP address of your ‘mysql client’.
+4. By default, both of your EC2 virtual servers are located in the same local virtual network, so they can communicate to each other using local IP addresses. Use mysql server's local IP address to connect from mysql client. MySQL server uses TCP port 3306 by default, so you will have to open it by creating a new entry in ‘Inbound rules’ in ‘mysql server’ Security Groups. For extra security, do not allow all IP addresses to reach your ‘mysql server’ – allow access only to the specific local IP address of your ‘mysql client’.
 
 <img width="1000" alt="Screenshot 2023-07-18 at 14 01 29" src="https://github.com/LarryLeo9/Darey.io/assets/136237391/f88af2a7-4911-47e9-9125-e90427e4f54e">
 
 
 
 5.  You need to configure MySQL server to allow connections from remote hosts using: sudo vi /etc/mysql/mysql.conf.d/mysqld.cnf
+
+   Replace ‘127.0.0.1’ to ‘0.0.0.0’ like this:
+
+   <img width="743" alt="Screenshot 2023-08-02 at 17 10 15" src="https://github.com/LarryLeo9/Darey.io/assets/136237391/5b42858d-d6e9-4e4a-8330-47fd0534d2cf">
+
+This is what you get;
 
 
 <img width="586" alt="Screenshot 2023-07-18 at 14 16 56" src="https://github.com/LarryLeo9/Darey.io/assets/136237391/f3b83d27-036d-4506-aab6-654c75939881">
