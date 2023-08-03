@@ -14,6 +14,9 @@ Generally, web, or mobile solutions are implemented based on what is called the 
 
 Three-tier Architecture is a client-server software architecture pattern that comprise of 3 separate layers.
 
+<img width="686" alt="Screenshot 2023-08-03 at 17 30 21" src="https://github.com/LarryLeo9/Darey.io/assets/136237391/24e640ad-34c8-41a3-a70d-6a2255389e42">
+
+
 1. Presentation Layer (PL): This is the user interface such as the client server or browser on your laptop.
 2. Business Layer (BL): This is the backend program that implements business logic. Application or Webserver
 3. Data Access or Management Layer (DAL): This is the layer for computer data storage and data access. Database Server or File System Server such as FTP server, or NFS Server
@@ -33,46 +36,52 @@ Your 3-Tier Setup
 
 1. Launch an EC2 instance that will serve as “Web Server”. Create 3 volumes in the same AZ as your Web Server EC2, each of 10 GiB.
 
-<img width="1097" alt="Screenshot 2023-07-28 at 13 34 38" src="https://github.com/LarryLeo9/Darey.io/assets/136237391/7dd90902-7a55-45af-8f50-7d38400ee4d7">
+<img width="1103" alt="Screenshot 2023-08-03 at 19 30 27" src="https://github.com/LarryLeo9/Darey.io/assets/136237391/a4f86c35-58ad-41d8-b6cc-7015a94f69c1">
 
-Attach all three volumes one by one to your Web Server EC2 instance
+Attach all three volumes one by one to your Web Server EC2 instance.
 
-<img width="1063" alt="Screenshot 2023-07-28 at 13 37 25" src="https://github.com/LarryLeo9/Darey.io/assets/136237391/56e2f424-5960-4797-907e-a52e550b99f5">
+<img width="1103" alt="Screenshot 2023-08-03 at 19 35 09" src="https://github.com/LarryLeo9/Darey.io/assets/136237391/a4705a3b-f0c3-4eda-9aff-f2d8b823ea4c">
 
 2. Open up the Linux terminal to begin configuration
 
 3. Use lsblk command to inspect what block devices are attached to the server. Notice names of your newly created devices. All devices in Linux reside in /dev/ directory. Inspect it with ls /dev/ and make sure you see all 3 newly created block devices there – their names will likely be xvdf, xvdh, xvdg.
 
+<img width="656" alt="Screenshot 2023-08-03 at 18 20 34" src="https://github.com/LarryLeo9/Darey.io/assets/136237391/b8c17c66-a06b-4f15-9e7b-be61640db7c5">
+
 4. Use df -h command to see all mounts and free space on your server
 
-<img width="585" alt="Screenshot 2023-07-28 at 13 44 50" src="https://github.com/LarryLeo9/Darey.io/assets/136237391/40dfb4dc-46bb-4692-80b4-805b85023304">
+<img width="938" alt="Screenshot 2023-08-03 at 19 46 48" src="https://github.com/LarryLeo9/Darey.io/assets/136237391/7966aaf8-e62f-4593-9132-c1c17d834c8d">
 
 5. Use gdisk utility to create a single partition on each of the 3 disks: sudo gdisk /dev/xvdf use "n" to add a new partition.
 
-<img width="652" alt="Screenshot 2023-07-28 at 13 48 37" src="https://github.com/LarryLeo9/Darey.io/assets/136237391/83fd82e0-23da-452b-b958-f7823db0c0c1">
+<img width="666" alt="Screenshot 2023-08-03 at 19 50 35" src="https://github.com/LarryLeo9/Darey.io/assets/136237391/e724c71d-c60e-4d4c-8955-4e07c9959a44">
 
 6. Use lsblk utility to view the newly configured partition on each of the 3 disks.
 
-<img width="330" alt="Screenshot 2023-07-28 at 13 59 12" src="https://github.com/LarryLeo9/Darey.io/assets/136237391/1f50c757-5a27-4086-b885-ca5cd83875c5">
+<img width="379" alt="Screenshot 2023-08-03 at 19 53 30" src="https://github.com/LarryLeo9/Darey.io/assets/136237391/02fe1726-5b82-49fc-80a2-103e36b2229c">
 
 7. Install lvm2 package using sudo yum install lvm2. Run sudo lvmdiskscan command to check for available partitions.
 Note: Previously, in Ubuntu we used apt command to install packages, in RedHat/CentOS a different package manager is used, so we shall use yum command instead.
 
-<img width="342" alt="Screenshot 2023-07-28 at 14 02 30" src="https://github.com/LarryLeo9/Darey.io/assets/136237391/b717af75-09b1-4306-bab3-5327f727736e">
+Before installing the lvm2 package, run sudo yum update (to update the package) and also run sudo yum upgrade (to upgrade the packgae to the latest version). 
+
+If you encounter an error message of "This system is not registered with an entitlement server. You can use subscription-manager to register". In your preferred editor (vi, vim, nano, etc.) open the “subscription-manager.conf” file using "sudo nano /etc/yum/pluginconf.d/subscription-manager.conf" . Inside the “subscription-manager.conf” file change enabled to 0 and save the file. Lastly issue the “yum clean all” command.
+
+<img width="726" alt="Screenshot 2023-08-03 at 20 14 36" src="https://github.com/LarryLeo9/Darey.io/assets/136237391/9d1e01d8-336c-44ee-8fa4-4558c01f902b">
+
+Now, install lvm2 package using sudo yum install lvm2. Run sudo lvmdiskscan command to check for available partitions.
 
 8. Use pvcreate utility to mark each of 3 disks as physical volumes (PVs) to be used by LVM, using "sudo pvcreate /dev/xvdf1 /dev/xvdg1 /dev/xvdh1".
 
 9. Verify that your Physical volume has been created successfully by running sudo pvs.
 
-<img width="548" alt="Screenshot 2023-07-28 at 14 07 27" src="https://github.com/LarryLeo9/Darey.io/assets/136237391/5b5ddf83-1598-4f9f-8a47-2dce25933c8d">
+<img width="362" alt="Screenshot 2023-08-03 at 20 19 15" src="https://github.com/LarryLeo9/Darey.io/assets/136237391/6fb4ec7f-b81a-4765-9789-5afc6b8e4024">
 
 10. Use vgcreate utility to add all 3 PVs to a volume group (VG). Name the VG webdata-vg "sudo vgcreate webdata-vg /dev/xvdh1 /dev/xvdg1 /dev/xvdf1".
 
-<img width="548" alt="Screenshot 2023-07-28 at 14 10 40" src="https://github.com/LarryLeo9/Darey.io/assets/136237391/1637f864-8d65-49b7-a576-49c80154179d">
-
 11. Verify that your VG has been created successfully by running sudo vgs.
 
-<img width="548" alt="Screenshot 2023-07-28 at 14 13 06" src="https://github.com/LarryLeo9/Darey.io/assets/136237391/0576ed2f-92bf-4c03-a40c-578531b4560e">
+<img width="720" alt="Screenshot 2023-08-03 at 20 22 17" src="https://github.com/LarryLeo9/Darey.io/assets/136237391/2e34aa5c-955a-498b-b465-a6c21b4142c1">
 
 12. Use lvcreate utility to create 2 logical volumes. apps-lv (Use half of the PV size), and logs-lv Use the remaining space of the PV size. NOTE: apps-lv will be used to store data for the Website while, logs-lv will be used to store data for logs
 
@@ -82,11 +91,11 @@ sudo lvcreate -n logs-lv -L 14G webdata-vg
 
 14. Verify that your Logical Volume has been created successfully by running sudo lvs.
 
-<img width="551" alt="Screenshot 2023-07-28 at 14 17 07" src="https://github.com/LarryLeo9/Darey.io/assets/136237391/60154cc1-279e-47b4-8d11-fd889a9b1753">
+<img width="720" alt="Screenshot 2023-08-03 at 20 25 12" src="https://github.com/LarryLeo9/Darey.io/assets/136237391/3411f5e5-019a-47c1-89ba-1a6807065872">
 
 15. Verify the entire setup, using "sudo vgdisplay -v #view complete setup - VG, PV, and LV" and "sudo lsblk" to verify.
 
-<img width="463" alt="Screenshot 2023-07-28 at 14 22 05" src="https://github.com/LarryLeo9/Darey.io/assets/136237391/1ec73293-e45a-44e0-a7cb-e5f004616189">
+<img width="500" alt="Screenshot 2023-08-03 at 20 28 19" src="https://github.com/LarryLeo9/Darey.io/assets/136237391/285d8dc7-2a4a-4d3e-b56a-0c63d0f03259">
 
 16. Use mkfs.ext4 to format the logical volumes with ext4 filesystem.
 
@@ -94,7 +103,7 @@ sudo mkfs -t ext4 /dev/webdata-vg/apps-lv
 
 sudo mkfs -t ext4 /dev/webdata-vg/logs-lv
 
-<img width="581" alt="Screenshot 2023-07-28 at 14 26 41" src="https://github.com/LarryLeo9/Darey.io/assets/136237391/d6de694e-dda9-4c50-84ab-37cf784c4fea">
+<img width="640" alt="Screenshot 2023-08-03 at 20 30 11" src="https://github.com/LarryLeo9/Darey.io/assets/136237391/a36846a1-f14e-4e48-b4de-f68f6f57976d">
 
 17. Create /var/www/html directory to store website files.
 
@@ -124,7 +133,7 @@ Update /etc/fstab in this format using your own UUID and rememeber to remove the
 
 25. Verify your setup by running df -h, output must look like this:
 
-<img width="504" alt="Screenshot 2023-07-28 at 14 57 08" src="https://github.com/LarryLeo9/Darey.io/assets/136237391/63b35034-c0af-41d0-98fc-3df3eda1298c">
+<img width="572" alt="Screenshot 2023-08-03 at 21 28 45" src="https://github.com/LarryLeo9/Darey.io/assets/136237391/287ff5da-b4ba-4475-8d10-4c115d430f66">
 
 #### Step 2 — Prepare the Database Server
 
@@ -229,6 +238,8 @@ Go back to the EC2 webserver and configure the PHP using "vi wp-config.php"
 
 Hint: Do not forget to open MySQL port 3306 on DB Server EC2. For extra security, you shall allow access to the DB server ONLY from your Web Server’s IP address, so in the Inbound Rule configuration specify source as /32
 
+<img width="1053" alt="Screenshot 2023-08-04 at 00 44 30" src="https://github.com/LarryLeo9/Darey.io/assets/136237391/79fd456a-4715-40e2-9f12-76ca282cbd52">
+
 1. Install MySQL client and test that you can connect from your Web Server to your DB server by using mysql-client
 
 sudo yum install mysql
@@ -237,6 +248,8 @@ sudo mysql -u username -p -h <DB-Server-Private-IP-address>
 
 Verify if you can successfully execute SHOW DATABASES; command and see a list of existing databases.
 
-<img width="575" alt="Screenshot 2023-07-29 at 00 41 16" src="https://github.com/LarryLeo9/Darey.io/assets/136237391/6859d675-bb2f-4851-a6e2-b3c2c9cde0cb">
+<img width="636" alt="Screenshot 2023-08-04 at 00 42 30" src="https://github.com/LarryLeo9/Darey.io/assets/136237391/163e66ee-d156-49a9-a726-4884a72a6ab5">
+
+
 
 
