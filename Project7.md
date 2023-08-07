@@ -283,18 +283,21 @@ Note 1: Do not forget to open TCP port 80 on the Web Server.
 
 Note 2: If you encounter 403 Error – check permissions to your /var/www/html folder and also disable SELinux sudo setenforce 0
 
-To make this change permanent – open following config file sudo vi /etc/sysconfig/selinux and set SELINUX=disabledthen restrt httpd.
+To make this change permanent – open following config file sudo vi /etc/sysconfig/selinux and set SELINUX=disabled then restrt httpd.
 
 <img width="728" alt="Screenshot 2023-08-04 at 20 24 29" src="https://github.com/LarryLeo9/Darey.io/assets/136237391/72a5a1ba-4c07-4146-9edd-816a8218a1dc">
 
 10. Update the website’s configuration to connect to the database (in /var/www/html/functions.php file). Apply tooling-db.sql script to your database using this command mysql -h <databse-private-ip> -u <db-username> -p <db-pasword> < tooling-db.sql
 
-11. Create in MySQL a new admin user with username: myuser and password: password:
+  <img width="658" alt="Screenshot 2023-08-07 at 14 36 17" src="https://github.com/LarryLeo9/Darey.io/assets/136237391/eafcf883-0630-450b-98f9-965ca0ef2989">
+
+
+12. Create in MySQL a new admin user with username: myuser and password: password:
 
     INSERT INTO ‘users’ (‘id’, ‘username’, ‘password’, ’email’, ‘user_type’, ‘status’) VALUES
 -> (1, ‘myuser’, ‘5f4dcc3b5aa765d61d8327deb882cf99’, ‘user@mail.com’, ‘admin’, ‘1’);
 
-12. Open the website in your browser http://<Web-Server-Public-IP-Address-or-Public-DNS-Name>/index.php and make sure you can login into the website with myuser user.
+13. Open the website in your browser http://<Web-Server-Public-IP-Address-or-Public-DNS-Name>/index.php and make sure you can login into the website with myuser user.
 
 
 
